@@ -104,13 +104,12 @@ bool basic_sort(int a, int b)
 
 int ratio(Library l)
 {
-    if (l.T > D)
+    if (l.T > D- curr_days)
         return -1;
-    curr_days += l.T;
     sort(l.books.begin(), l.books.end(), basic_sort);
-    //int left_books = (D - curr_days) * l.M;
+    int left_books = (D - curr_days) * l.M;
 
-    int a = book_val(l, D - l.T);
+    int a = book_val(l, D - curr_days);
     return l.N * l.M * a - l.T;
 }
 
@@ -123,13 +122,25 @@ void add_ratio(Output o)
         lib_ratios.push_back(lr);
     }
     sort(lib_ratios.begin(), lib_ratios.end(), sort_lib);
-    for(auto lr : lib_ratios)
+    while(!lib_ratios.empty())
     {
-        o.add_library(lr.l, lr.l.books);
-        if (D == 1)
-            break;
-        D--;
+        o.add_library(lib_ratios[0].l, lib_ratios[0].l.books);
+        curr_days += lib_ratios[0].l.T;
+        lib_ratios.erase(lib_ratios.begin());
+        for(auto lr : lib_ratios)
+        {
+            lr.ratio = ratio(lr.l);
+        }
+        sort(lib_ratios.begin(), lib_ratios.end(), sort_lib);
     }
+    /*
+       for(auto lr : lib_ratios)
+       {
+       o.add_library(lr.l, lr.l.books);
+       if (D == 1)
+       break;
+       D--;
+       }*/
     o.dump();
 }
 
