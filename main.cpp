@@ -15,6 +15,47 @@ struct Library {
     int_vec books;
 };
 
+using lib_vectratio  = vector<lib_ratio>;
+
+struct lib_ratio
+{
+    Library l;
+    int ratio;
+}
+
+int ratio(Library l)
+{
+    if (T > D)
+        return -1;
+    return l.N * l.M - T;
+}
+
+bool sort_lib(auto lhs, auto rhs)
+{
+    return lhs->ratio > rhs->ratio;
+}
+
+void add_ratio()
+{
+    lib_vectratio lib_ratios;
+    for(auto l : libraries)
+    {
+        lib_ratio lr { l, ratio(l)};
+        lib_ratios.push(lr);
+    }
+    sort(lib_ratios.begin(), lib_ratios.end(), sort_lib);
+    int nb_library;
+    for(auto lr : lib_ratios)
+    {
+        nb_library ++;
+
+        if (D == 1)
+            break;
+        D--;
+    }
+}
+
+
 istream& operator>>(istream &in, Library &l)
 {
     l.id = library_id_count++;
