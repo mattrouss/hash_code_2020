@@ -87,17 +87,31 @@ int D;
 
 int_vec book_scores;
 
-int ratio(Library l)
+int book_val(Library l, int left_books)
 {
-    if (l.T > D)
-        return -1;
-    //int a = accumulate(l.books.begin(), l.books.end(), 0);
-    return l.N * l.M - l.T;// + a;
+    int value = 0;
+    for(int i = 0; i < left_books && i < l.books.size(); i++)
+        value += book_scores[l.books[i]];
+    return value / l.books.size();
 }
+
+int curr_days = 0;
 
 bool basic_sort(int a, int b)
 {
     return book_scores[a] > book_scores[b];
+}
+
+int ratio(Library l)
+{
+    if (l.T > D)
+        return -1;
+    curr_days += l.T;
+    sort(l.books.begin(), l.books.end(), basic_sort);
+    int left_books = (D - curr_days) * l.M;
+
+    int a = book_val(l, left_books);
+    return l.N * l.M * a - l.T;
 }
 
 void add_ratio(Output o)
@@ -105,7 +119,6 @@ void add_ratio(Output o)
     lib_vectratio lib_ratios;
     for(auto l : libraries)
     {
-        sort(l.books.begin(), l.books.end(), basic_sort);
         lib_ratio lr { l, ratio(l)};
         lib_ratios.push_back(lr);
     }
