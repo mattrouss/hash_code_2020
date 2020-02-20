@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-
+#include <numeric>
 using namespace std;
 using int_vec = vector<int>;
 
@@ -15,45 +15,21 @@ struct Library {
     int_vec books;
 };
 
-using lib_vectratio  = vector<lib_ratio>;
 
 struct lib_ratio
 {
     Library l;
     int ratio;
-}
+};
 
-int ratio(Library l)
+using lib_vectratio  = vector<lib_ratio>;
+
+
+bool sort_lib(lib_ratio lhs, lib_ratio rhs)
 {
-    if (T > D)
-        return -1;
-    return l.N * l.M - T;
+    return lhs.ratio > rhs.ratio;
 }
 
-bool sort_lib(auto lhs, auto rhs)
-{
-    return lhs->ratio > rhs->ratio;
-}
-
-void add_ratio()
-{
-    lib_vectratio lib_ratios;
-    for(auto l : libraries)
-    {
-        lib_ratio lr { l, ratio(l)};
-        lib_ratios.push(lr);
-    }
-    sort(lib_ratios.begin(), lib_ratios.end(), sort_lib);
-    int nb_library;
-    for(auto lr : lib_ratios)
-    {
-        nb_library ++;
-
-        if (D == 1)
-            break;
-        D--;
-    }
-}
 
 
 istream& operator>>(istream &in, Library &l)
@@ -105,15 +81,46 @@ void Output::dump() const {
         cout << endl;
     }
 }
-
+vector<Library> libraries;
 int B;
 int L;
 int D;
 
+int ratio(Library l)
+{
+    if (l.T > D)
+        return -1;
+    //int a = accumulate(l.books.begin(), l.books.end(), 0);
+    return l.N * l.M - l.T;// + a;
+}
+
+bool basic_sort(int a, int b)
+{
+    return a > b;
+}
+
+void add_ratio(Output o)
+{
+    lib_vectratio lib_ratios;
+    for(auto l : libraries)
+    {
+        sort(l.books.begin(), l.books.end(), basic_sort);
+        lib_ratio lr { l, ratio(l)};
+        lib_ratios.push_back(lr);
+    }
+    sort(lib_ratios.begin(), lib_ratios.end(), sort_lib);
+    for(auto lr : lib_ratios)
+    {
+        o.add_library(lr.l, lr.l.books);
+        if (D == 1)
+            break;
+        D--;
+    }
+    o.dump();
+}
+
+
 int_vec book_scores;
-vector<Library> libraries;
-
-
 
 int main() {
     cin >> B >> L >> D;
@@ -126,9 +133,9 @@ int main() {
         cin >> l;
 
     Output o;
-    o.add_library(libraries[0], libraries[0].books);
-    o.add_library(libraries[1], libraries[1].books);
-    o.dump();
+    add_ratio(o);
+    //o.add_library(libraries[0], libraries[0].books);
+    //o.add_library(libraries[1], libraries[1].books);
 
     return 0;
 }
