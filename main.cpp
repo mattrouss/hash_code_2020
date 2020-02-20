@@ -31,7 +31,6 @@ bool sort_lib(lib_ratio lhs, lib_ratio rhs)
 }
 
 
-
 istream& operator>>(istream &in, Library &l)
 {
     l.id = library_id_count++;
@@ -86,6 +85,8 @@ int B;
 int L;
 int D;
 
+int_vec book_scores;
+
 int ratio(Library l)
 {
     if (l.T > D)
@@ -96,7 +97,7 @@ int ratio(Library l)
 
 bool basic_sort(int a, int b)
 {
-    return a > b;
+    return book_scores[a] > book_scores[b];
 }
 
 void add_ratio(Output o)
@@ -118,9 +119,6 @@ void add_ratio(Output o)
     }
     o.dump();
 }
-
-
-int_vec book_scores;
 
 int main() {
     cin >> B >> L >> D;
