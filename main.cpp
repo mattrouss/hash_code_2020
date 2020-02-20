@@ -92,7 +92,7 @@ int book_val(Library l, int left_books)
     int value = 0;
     for(int i = 0; i < left_books && i < l.books.size(); i++)
         value += book_scores[l.books[i]];
-    return value / l.books.size();
+    return value;
 }
 
 int curr_days = 0;
@@ -108,9 +108,9 @@ int ratio(Library l)
         return -1;
     curr_days += l.T;
     sort(l.books.begin(), l.books.end(), basic_sort);
-    int left_books = (D - curr_days) * l.M;
+    //int left_books = (D - curr_days) * l.M;
 
-    int a = book_val(l, left_books);
+    int a = book_val(l, D - l.T);
     return l.N * l.M * a - l.T;
 }
 
