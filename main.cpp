@@ -4,7 +4,10 @@
 using namespace std;
 using int_vec = vector<int>;
 
+
+int library_id_count = 0;
 struct Library {
+    int id;
     int N;
     int T;
     int M;
@@ -14,6 +17,7 @@ struct Library {
 
 istream& operator>>(istream &in, Library &l)
 {
+    l.id = library_id_count++;
     in >> l.N >> l.T >> l.M;
     l.books.resize(l.N);
     for (auto &book: l.books)
@@ -23,7 +27,7 @@ istream& operator>>(istream &in, Library &l)
 }
 
 ostream& operator<<(ostream &out, Library &l) {
-    out << "Library {" << endl;
+    out << "Library #" << l.id << " {" << endl;
     out << "N: " << l.N << endl;
     out << "T: " << l.T << endl;
     out << "M: " << l.M << endl;
@@ -36,12 +40,38 @@ ostream& operator<<(ostream &out, Library &l) {
     return out;
 }
 
+struct Output {
+    vector<Library> libraries;
+    vector<int_vec> books;
+
+
+    void add_library(const Library &l, const int_vec &books);
+    void dump() const;
+};
+
+void Output::add_library(const Library &l, const int_vec &b) {
+    libraries.push_back(l);
+    books.push_back(b);
+}
+
+void Output::dump() const {
+    cout << libraries.size() << endl;
+    for (auto i = 0u; i < libraries.size(); i++)
+    {
+        cout << libraries[i].id << " " << books[i].size() << endl;
+        for (auto &b: books[i])
+            cout << b << " ";
+        cout << endl;
+    }
+}
+
 int B;
 int L;
 int D;
 
 int_vec book_scores;
 vector<Library> libraries;
+
 
 
 int main() {
@@ -54,16 +84,10 @@ int main() {
     for (auto &l: libraries)
         cin >> l;
 
-    cout << B << endl;
-    cout << L << endl;
-    cout << D << endl;
-    cout << "Book scores:" << endl;
-    for (auto &b: book_scores)
-        cout << b << " ";
-    cout << endl;
-    cout << "Libraries:" << endl;
-    for (auto &l: libraries)
-        cout << l;
+    Output o;
+    o.add_library(libraries[0], libraries[0].books);
+    o.add_library(libraries[1], libraries[1].books);
+    o.dump();
 
     return 0;
 }
